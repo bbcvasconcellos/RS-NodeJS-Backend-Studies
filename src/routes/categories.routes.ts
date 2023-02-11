@@ -13,7 +13,8 @@ const categoriesRoutes = Router();
 const upload = multer({
   dest: "./tmp",
 });
-const categoriesRepository = CategoriesRepository.getInstance();
+
+const categoriesRepository = new CategoriesRepository();
 
 categoriesRoutes.post("/", (request: Request, response: Response) => {
   const createCategoryService = new CreateCategoryService(categoriesRepository);
