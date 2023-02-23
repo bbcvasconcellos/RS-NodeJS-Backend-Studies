@@ -1,12 +1,8 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import multer from "multer";
 
-import { ListCategoryService } from "../modules/cars/services/listCategoryService";
-import { CreateCategoryService } from "../modules/cars/services/createCategoryService";
 import { ListCategoryController } from "../modules/cars/controller/listCategoryController";
 import { CreateCategoryController } from "../modules/cars/controller/createCategoryController";
-import { CategoriesRepository } from "../modules/cars/repositories/implementation/CategoriesRepository";
-import { ImportCategoryService } from "../modules/cars/services/importCategoryService";
 import { ImportCategoryController } from "../modules/cars/controller/importCategoryController";
 
 const categoriesRoutes = Router();
@@ -14,27 +10,14 @@ const upload = multer({
   dest: "./tmp",
 });
 
-const categoriesRepository = new CategoriesRepository();
+const createCategoryController = new CreateCategoryController();
+const importCategoryController = new ImportCategoryController();
+const listCategoryController = new ListCategoryController();
 
-categoriesRoutes.post("/", (request: Request, response: Response) => {
-  const createCategoryService = new CreateCategoryService(categoriesRepository);
-  const createCategoryController = new CreateCategoryController(createCategoryService);
+categoriesRoutes.post("/", createCategoryController.handle); // express passa req e res automaticamente para o handle
 
-  return createCategoryController.handle(request, response);
-});
+categoriesRoutes.get("/", listCategoryController.handle);
 
-categoriesRoutes.get("/", (request: Request, response: Response) => {
-  const listCategoryService = new ListCategoryService(categoriesRepository);
-  const listCategoryController = new ListCategoryController(listCategoryService);
-
-  return listCategoryController.handle(request, response);
-});
-
-categoriesRoutes.post("/import", upload.single("file"), (request: Request, response: Response) => {
-  const importCategoryService = new ImportCategoryService(categoriesRepository);
-  const importCategoryController = new ImportCategoryController(importCategoryService);
-
-  return importCategoryController.handle(request, response);
-});
+categoriesRoutes.post("/import", upload.single("file"), importCategoryController.handle);
 
 export { categoriesRoutes };
