@@ -6,6 +6,7 @@ const dataSource = new DataSource({
   username: "admin",
   password: "admin",
   database: "rentx",
+  synchronize: true,
   migrations: ["./src/database/migrations/*.ts"],
   entities: ["./src/modules/**/models/*.ts"],
 });
